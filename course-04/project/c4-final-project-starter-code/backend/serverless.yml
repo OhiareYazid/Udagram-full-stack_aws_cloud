@@ -10,6 +10,7 @@ plugins:
   - serverless-reqvalidator-plugin
   - serverless-plugin-tracing
   - serverless-aws-documentation
+  - serverless-offline
 
 provider:
   name: aws
