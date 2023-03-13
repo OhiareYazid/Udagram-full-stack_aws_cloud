@@ -81,23 +81,29 @@ export class TodoAccess {
 
     async updateTodoItem(todoUpdate: TodoUpdate, itemId: string, userId: string): Promise<TodoUpdate> {
         console.log("Updating todo item");
-
+        
+        // Get the S3 bucket name from the environment variables
+        const s3BucketName = process.env.S3_BUCKET_NAME;
+        
         const parameters = {
             TableName: this.tableName,
             Key: {
                 "userId": userId,
-                "todoId": itemId
+                "todoId": itemId,
+                "attachmentUrl": `https://${s3BucketName}.s3.amazonaws.com/${itemId}`
             },
-            UpdateExpression: "set #var1 = :a, #var2 = :b, #var3 = :c",
+            UpdateExpression: "set #var1 = :a, #var2 = :b, #var3 = :c, #var4 = :d",
             ExpressionAttributeNames: {
                 "#var1": "name",
                 "#var2": "dueDate",
-                "#var3": "done"
+                "#var3": "attachmentUrl",
+                "#var4": "done",
             },
             ExpressionAttributeValues: {
                 ":a": todoUpdate['name'],
                 ":b": todoUpdate['dueDate'],
-                ":c": todoUpdate['done']
+                ":c": todoUpdate['attachmentUrl'],
+                ":d": todoUpdate['done']
             },
             ReturnValues: "ALL_NEW"
         };
